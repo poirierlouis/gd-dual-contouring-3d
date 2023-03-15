@@ -95,10 +95,15 @@ func build() -> void:
 					continue
 				cell.compute_vertex()
 				if !cell.vertices.is_empty():
-					data[x + z * grid_size.x + y * grid_size.x * grid_size.z] = cell
+					var index := get_cell_index(x, y, z)
+					
+					data[index] = cell
 	var cells := data.filter(func(cell): return cell != null)
 
 	points.multimesh.instance_count = cells.size()
 	points.multimesh.visible_instance_count = cells.size()
 	for i in cells.size():
 		points.multimesh.set_instance_transform(i, Transform3D(Basis(), cells[i].get_vertex()))
+
+func get_cell_index(x: int, y: int, z: int) -> int:
+	return x + z * grid_size.x + y * grid_size.x * grid_size.z
