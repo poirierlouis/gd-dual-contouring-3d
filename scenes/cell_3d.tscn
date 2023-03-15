@@ -1,0 +1,123 @@
+[gd_scene load_steps=8 format=3 uid="uid://chfhllks2xnoi"]
+
+[ext_resource type="Script" path="res://scripts/cell_3d.gd" id="1_b6lui"]
+[ext_resource type="Material" uid="uid://q1yqcjvqr3rk" path="res://assets/voxel_solid_material.tres" id="1_jc8ch"]
+[ext_resource type="Material" uid="uid://b3ftjwp5w4mq1" path="res://assets/voxel_air_material.tres" id="2_vw7i6"]
+[ext_resource type="Material" uid="uid://djy04tmi4rx1s" path="res://assets/edge_empty_material.tres" id="3_m07og"]
+[ext_resource type="Material" uid="uid://bmf5k408ijcgh" path="res://assets/edge_crossing_material.tres" id="5_87m27"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_4fi27"]
+material = ExtResource("2_vw7i6")
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_xfbul"]
+material = ExtResource("3_m07og")
+top_radius = 0.25
+bottom_radius = 0.25
+height = 4.0
+
+[node name="Cell3D" type="Node3D"]
+script = ExtResource("1_b6lui")
+voxels = Array[bool]([true, false, false, false, false, false, false, false])
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 2.5, 7, 10)
+current = true
+
+[node name="0" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_4fi27")
+surface_material_override/0 = ExtResource("1_jc8ch")
+
+[node name="(0, 1)" type="MeshInstance3D" parent="."]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 2.5, 0, 0)
+mesh = SubResource("CylinderMesh_xfbul")
+surface_material_override/0 = ExtResource("5_87m27")
+
+[node name="1" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 0)
+mesh = SubResource("BoxMesh_4fi27")
+surface_material_override/0 = ExtResource("2_vw7i6")
+
+[node name="(0, 2)" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.91069e-15, -4.37114e-08, -1, -1, -4.37114e-08, 0, -4.37114e-08, 1, -4.37114e-08, 0, 0, 2.5)
+mesh = SubResource("CylinderMesh_xfbul")
+surface_material_override/0 = ExtResource("5_87m27")
+
+[node name="2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5)
+mesh = SubResource("BoxMesh_4fi27")
+surface_material_override/0 = ExtResource("2_vw7i6")
+
+[node name="(1, 3)" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.91069e-15, -4.37114e-08, -1, -1, -4.37114e-08, 0, -4.37114e-08, 1, -4.37114e-08, 5, 0, 2.5)
+mesh = SubResource("CylinderMesh_xfbul")
+surface_material_override/0 = ExtResource("3_m07og")
+
+[node name="(2, 3)" type="MeshInstance3D" parent="."]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 2.5, 0, 5)
+mesh = SubResource("CylinderMesh_xfbul")
+surface_material_override/0 = ExtResource("3_m07og")
+
+[node name="3" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 5)
+mesh = SubResource("BoxMesh_4fi27")
+surface_material_override/0 = ExtResource("2_vw7i6")
+
+[node name="(0, 4)" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+mesh = SubResource("CylinderMesh_xfbul")
+surface_material_override/0 = ExtResource("5_87m27")
+
+[node name="4" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
+mesh = SubResource("BoxMesh_4fi27")
+surface_material_override/0 = ExtResource("2_vw7i6")
+
+[node name="(4, 5)" type="MeshInstance3D" parent="."]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 2.5, 5, 0)
+mesh = SubResource("CylinderMesh_xfbul")
+surface_material_override/0 = ExtResource("3_m07og")
+
+[node name="(1, 5)" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 2.5, 0)
+mesh = SubResource("CylinderMesh_xfbul")
+surface_material_override/0 = ExtResource("3_m07og")
+
+[node name="5" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 5, 0)
+mesh = SubResource("BoxMesh_4fi27")
+surface_material_override/0 = ExtResource("2_vw7i6")
+
+[node name="(4, 6)" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.91069e-15, -4.37114e-08, -1, -1, -4.37114e-08, 0, -4.37114e-08, 1, -4.37114e-08, 0, 5, 2.5)
+mesh = SubResource("CylinderMesh_xfbul")
+surface_material_override/0 = ExtResource("3_m07og")
+
+[node name="(2, 6)" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 5)
+mesh = SubResource("CylinderMesh_xfbul")
+surface_material_override/0 = ExtResource("3_m07og")
+
+[node name="6" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 5)
+mesh = SubResource("BoxMesh_4fi27")
+surface_material_override/0 = ExtResource("2_vw7i6")
+
+[node name="(5, 7)" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.91069e-15, -4.37114e-08, -1, -1, -4.37114e-08, 0, -4.37114e-08, 1, -4.37114e-08, 5, 5, 2.5)
+mesh = SubResource("CylinderMesh_xfbul")
+surface_material_override/0 = ExtResource("3_m07og")
+
+[node name="(6, 7)" type="MeshInstance3D" parent="."]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 2.5, 5, 5)
+mesh = SubResource("CylinderMesh_xfbul")
+surface_material_override/0 = ExtResource("3_m07og")
+
+[node name="(3, 7)" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 2.5, 5)
+mesh = SubResource("CylinderMesh_xfbul")
+surface_material_override/0 = ExtResource("3_m07og")
+
+[node name="7" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 5, 5)
+mesh = SubResource("BoxMesh_4fi27")
+surface_material_override/0 = ExtResource("2_vw7i6")
