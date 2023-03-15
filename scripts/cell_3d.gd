@@ -44,12 +44,6 @@ func _ready():
 	])
 	update_cell()
 
-#func _input(event):
-#	if event.is_action_released("screenshot"):
-#		print("screenshot")
-#	if Engine.is_editor_hint() && event.is_action_released("screenshot"):
-#		print("in editor: screenshot")
-
 func screenshot():
 	var viewport := camera.get_viewport()
 	
