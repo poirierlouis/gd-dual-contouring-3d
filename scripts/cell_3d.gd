@@ -62,9 +62,9 @@ func update_cell():
 		
 		cubes[i].set_surface_override_material(0, material)
 	for edge in edges:
-		var x := edge.name.substr(1, 1).to_int()
-		var y := edge.name.substr(4, 1).to_int()
-		var is_crossing := voxels[x] != voxels[y]
+		var a := edge.name.substr(1, 1).to_int()
+		var b := edge.name.substr(4, 1).to_int()
+		var is_crossing := voxels[a] != voxels[b]
 		var material: StandardMaterial3D = EdgeCrossingMaterial if is_crossing else EdgeEmptyMaterial
 		
 		edge.set_surface_override_material(0, material)
