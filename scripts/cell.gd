@@ -55,7 +55,7 @@ func compute_voxels(iso_fn: Callable) -> void:
 
 # Compute sign changes between voxels (along edges).
 #
-# Return true when at least one edge is crossed.
+# Return true when at least three edges are crossed.
 func compute_edges() -> bool:
 	for i in 12:
 		var indices := CROSS_EDGES[i]
@@ -76,19 +76,49 @@ func compute_edge(ai: int, bi: int) -> Vector3:
 # Compute vertex(ices) position of [this] cell based on [edges] crossing.
 func compute_vertex() -> void:
 	var sides: Array = edges.filter(func(edge): return edge != null)
-	
+	var vertex: Vector3 = sides.reduce(func(a, b):
+		return Cell.get_centroid(a, b)
+	)
 #	if sides.size() > 3:
 		# TBD: non-manifold to manifold
 #		print("<cell at='%s' crossing-edges='%d' />" % [position, sides.size()])
 #		return
-	var a := Cell.get_centroid(sides[0], sides[1])
-	var b := Cell.get_centroid(sides[1], sides[2])
-	var vertex := Cell.get_centroid(a, b)
-	
+#	var a := Cell.get_centroid(sides[0], sides[1])
+#	var b := Cell.get_centroid(sides[1], sides[2])
+#	var vertex := Cell.get_centroid(a, b)
+#
 	vertices.push_back(vertex)
 
 func get_vertex() -> Vector3:
 	return vertices[0]
+
+#    +---------+
+#   /|4       /|
+#  / |    1  / |        Y
+# +---------+ 3|        |
+# |2 +------|--+		+---X
+# | / 0     | /        /
+# |/       5|/        Z
+# +---------+
+func get_faces() -> Array[Dictionary]:
+	var faces: Array[Dictionary] = []
+	
+	if edges[11] != null:
+		faces.append({
+			"flip": voxels[3] >= 0.0,
+			"vertices": [Vector3(1, 0, 0), Vector3(0, 0, 1), Vector3(1, 0, 1)]
+		})
+	if edges[6] != null:
+		faces.append({
+			"flip": voxels[5] < 0.0,
+			"vertices": [Vector3(1, 0, 0), Vector3(0, 1, 0), Vector3(1, 1, 0)]
+		})
+	if edges[7] != null:
+		faces.append({
+			"flip": voxels[6] >= 0.0,
+			"vertices": [Vector3(0, 0, 1), Vector3(0, 1, 0), Vector3(0, 1, 1)]
+		})
+	return faces
 
 # Compute center point between [a] and [b].
 static func get_centroid(a: Vector3, b: Vector3) -> Vector3:
