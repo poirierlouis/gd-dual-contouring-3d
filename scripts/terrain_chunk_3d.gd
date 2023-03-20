@@ -4,8 +4,8 @@ class_name TerrainChunk3D
 
 extends Node3D
 
-#var mesh := MeshInstance3D.new()
-#var tool := SurfaceTool.new()
+var mesh := MeshInstance3D.new()
+var tool := SurfaceTool.new()
 
 var points := MultiMeshInstance3D.new()
 
@@ -43,6 +43,9 @@ func _init():
 	points.multimesh.mesh = sphere
 	points.multimesh.transform_format = MultiMesh.TRANSFORM_3D
 	add_child(points)
+	
+	mesh.name = "DualContouringMesh"
+	add_child(mesh)
 
 func _ready():
 	if Engine.is_editor_hint():
@@ -51,7 +54,6 @@ func _ready():
 		_thread.start(on_rebuild)
 		_semaphore.post()
 	points.multimesh.mesh.surface_set_material(0, material)
-#	add_child(mesh)
 
 func _exit_tree():
 	if Engine.is_editor_hint():
@@ -98,6 +100,52 @@ func build() -> void:
 					var index := get_cell_index(x, y, z)
 					
 					data[index] = cell
+	var vertices := PackedVector3Array()
+	
+	for y in grid_size.y:
+		for z in grid_size.z:
+			for x in grid_size.x:
+				var index := get_cell_index(x, y, z)
+				var cell := data[index]
+				
+				if cell == null:
+					continue
+				var faces: Array[Dictionary] = cell.get_faces()
+				
+				for face in faces:
+					var quad: Array[Vector3] = [
+						cell.get_vertex(),
+					]
+					var face_vertices: Array = face["vertices"]
+					
+					for vertex in face_vertices:
+						var cell_index := get_cell_index(x + vertex.x, y + vertex.y, z + vertex.z)
+						
+						if cell_index >= int(grid_size.x * grid_size.y * grid_size.z):
+							break
+						var adjacent := data[cell_index]
+						
+						if adjacent != null:
+							quad.push_back(adjacent.get_vertex())
+					if quad.size() != 4:
+						continue
+					var flip: bool = face["flip"]
+					var tri = [[1, 2], [3, 2]] if !flip else [[2, 1], [2, 3]]
+					
+					vertices.push_back(quad[0])
+					vertices.push_back(quad[tri[0][0]])
+					vertices.push_back(quad[tri[0][1]])
+					
+					vertices.push_back(quad[1])
+					vertices.push_back(quad[tri[1][0]])
+					vertices.push_back(quad[tri[1][1]])
+	
+	tool.begin(Mesh.PRIMITIVE_TRIANGLES)
+	for vertex in vertices:
+		tool.add_vertex(vertex)
+	tool.generate_normals()
+	mesh.mesh = tool.commit()
+	
 	var cells := data.filter(func(cell): return cell != null)
 
 	points.multimesh.instance_count = cells.size()
@@ -105,5 +153,5 @@ func build() -> void:
 	for i in cells.size():
 		points.multimesh.set_instance_transform(i, Transform3D(Basis(), cells[i].get_vertex()))
 
-func get_cell_index(x: int, y: int, z: int) -> int:
-	return x + z * grid_size.x + y * grid_size.x * grid_size.z
+func get_cell_index(x: float, y: float, z: float) -> int:
+	return int(x + z * grid_size.x + y * grid_size.x * grid_size.z)
