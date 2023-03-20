@@ -49,12 +49,12 @@ func screenshot():
 	
 	await RenderingServer.frame_post_draw
 	var image := viewport.get_window().get_texture().get_image()
-	var name: String = ""
-
+	var file_name: String = ""
+	
 	for i in cubes.size():
-		name += "1" if voxels[i] else "0"
+		file_name += "1" if voxels[i] else "0"
 	image = image.get_region(Rect2i(650, 224, 624, 510))
-	image.save_png("user://screenshot_%s.png" % name)
+	image.save_png("user://screenshot_%s.png" % file_name)
 
 func update_cell():
 	for i in cubes.size():
