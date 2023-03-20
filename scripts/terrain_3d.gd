@@ -41,7 +41,7 @@ func _run():
 
 func generate_chunk(chunk_data: Dictionary) -> void:
 	var chunk: TerrainChunk3D = chunk_data["scene"]
-	var grid_position: Vector3 = chunk_data["position"]
+	var grid_position: Vector3i = chunk_data["position"]
 	
 	create_chunk(chunk, grid_position)
 	call_deferred("add_child", chunk)
