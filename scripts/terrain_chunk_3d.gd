@@ -34,13 +34,13 @@ func _init():
 		_thread = Thread.new()
 		_semaphore = Semaphore.new()
 		_running = false
-	var mesh := SphereMesh.new()
+	var sphere := SphereMesh.new()
 	
-	mesh.radius = 0.2
-	mesh.height = 2 * mesh.radius
+	sphere.radius = 0.2
+	sphere.height = 2 * sphere.radius
 	
 	points.multimesh = MultiMesh.new()
-	points.multimesh.mesh = mesh
+	points.multimesh.mesh = sphere
 	points.multimesh.transform_format = MultiMesh.TRANSFORM_3D
 	add_child(points)
 
