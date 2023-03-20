@@ -14,7 +14,7 @@ environment = SubResource("Environment_gdk03")
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 14.5169, 0)
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.906249, 0.422745, 0, -0.422745, 0.906249, 0, 14.794, 18.8176)
+transform = Transform3D(-0.728347, 0.289668, -0.620969, 0, 0.906249, 0.422745, 0.685208, 0.307905, -0.660064, -12, 15, -12)
 script = ExtResource("1_huq2s")
 
 [node name="Gizmo" type="MeshInstance3D" parent="."]
