@@ -17,13 +17,14 @@ var EdgeCrossingMaterial: StandardMaterial3D = load("res://assets/edge_crossing_
 			update_cell()
 			screenshot()
 
+@export var with_screenshot := false
+
 @onready var camera: Camera3D = $Camera3D
 
 var cubes: Array[MeshInstance3D] = []
 var edges: Array[MeshInstance3D] = []
 
 func _ready():
-	camera.make_current()
 	for i in 8:
 		cubes.push_back(get_node("%d" % i))
 	edges.append_array([
@@ -45,6 +46,8 @@ func _ready():
 	update_cell()
 
 func screenshot():
+	if not with_screenshot:
+		return
 	var viewport := camera.get_viewport()
 	
 	await RenderingServer.frame_post_draw
