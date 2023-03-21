@@ -38,6 +38,9 @@ func _input(event):
 		
 		mode = Viewport.DEBUG_DRAW_DISABLED if mode == Viewport.DEBUG_DRAW_WIREFRAME else Viewport.DEBUG_DRAW_WIREFRAME
 		get_viewport().debug_draw = mode
+	if event.is_action_released("toggle_points"):
+		for chunk in chunks:
+			chunk["scene"].toggle_points()
 
 func _exit_tree():
 	thread.wait_to_finish()

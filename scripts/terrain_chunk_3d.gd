@@ -86,6 +86,13 @@ func on_rebuild() -> void:
 			return
 		build()
 
+# Show / hide points (vertices per voxel).
+func toggle_points() -> void:
+	if points.is_inside_tree():
+		remove_child(points)
+	else:
+		add_child(points)
+
 func build() -> void:
 	var data: Array[Cell] = []
 	
