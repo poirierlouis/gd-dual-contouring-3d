@@ -26,7 +26,7 @@ var points := MultiMeshInstance3D.new()
 
 var max_grid_size_index: int:
 	get:
-		return int(grid_size.x * grid_size.z * grid_size.y)
+		return int((grid_size.x + 2) * (grid_size.z + 2) * (grid_size.y + 2))
 
 # Editor only
 var _thread: Thread
@@ -88,11 +88,11 @@ func on_rebuild() -> void:
 func build() -> void:
 	var data: Array[Cell] = []
 	
-	data.resize(int(grid_size.x * grid_size.y * grid_size.z))
+	data.resize(int((grid_size.x + 2) * (grid_size.y + 2) * (grid_size.z + 2)))
 	data.fill(null)
-	for y in grid_size.y:
-		for z in grid_size.z:
-			for x in grid_size.x:
+	for y in range(-1, grid_size.y + 1):
+		for z in range(-1, grid_size.z + 1):
+			for x in range(-1, grid_size.x + 1):
 				var cell_position := Vector3(x, y, z)
 				var cell := Cell.new(cell_position, position, grid_scale)
 				
@@ -161,9 +161,9 @@ func build() -> void:
 #
 # Returns an index number, -1 when out of bounds.
 func get_cell_index(x: float, y: float, z: float) -> int:
-	if x < 0 || y < 0 || z < 0 || x >= grid_size.x || y >= grid_size.y || z >= grid_size.z:
+	if x < 0 || y < 0 || z < 0 || x >= grid_size.x + 2 || y >= grid_size.y + 2 || z >= grid_size.z + 2:
 		return -1
-	var index := int(x + z * grid_size.x + y * grid_size.x * grid_size.z)
+	var index := int(x + z * (grid_size.x + 2) + y * (grid_size.x + 2) * (grid_size.z + 2))
 	
 	if index < 0 || index >= max_grid_size_index:
 		return -1
