@@ -45,12 +45,13 @@ func _init():
 	sphere.radial_segments = 16
 	sphere.rings = roundi(sphere.radial_segments / 2.0)
 	
+	points.name = "Vertices"
 	points.multimesh = MultiMesh.new()
 	points.multimesh.mesh = sphere
 	points.multimesh.transform_format = MultiMesh.TRANSFORM_3D
 	add_child(points)
 	
-	mesh.name = "DualContouringMesh"
+	mesh.name = "Mesh"
 	add_child(mesh)
 
 func _ready():
