@@ -38,6 +38,8 @@ func _init():
 	
 	sphere.radius = 0.2
 	sphere.height = 2 * sphere.radius
+	sphere.radial_segments = 16
+	sphere.rings = roundi(sphere.radial_segments / 2.0)
 	
 	points.multimesh = MultiMesh.new()
 	points.multimesh.mesh = sphere
