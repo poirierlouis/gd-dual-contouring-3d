@@ -10,5 +10,5 @@ noise_type = 3
 script = ExtResource("1_dt8lj")
 noise = SubResource("FastNoiseLite_m6ndr")
 material = ExtResource("2_ki4j0")
-grid_size = Vector3(16, 16, 16)
+grid_size = Vector3(32, 32, 32)
 grid_scale = Vector3(2, 2, 2)
