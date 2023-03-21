@@ -4,6 +4,11 @@ class_name TerrainChunk3D
 
 extends Node3D
 
+const TRIANGLE_INDICES := [
+	[[1, 2], [3, 2]],
+	[[2, 1], [2, 3]],
+]
+
 var mesh := MeshInstance3D.new()
 var tool := SurfaceTool.new()
 
@@ -141,16 +146,15 @@ func build() -> void:
 							quad.push_back(adjacent.get_vertex())
 					if quad.size() != 4:
 						continue
-					var flip: bool = face["flip"]
-					var tri = [[1, 2], [3, 2]] if !flip else [[2, 1], [2, 3]]
+					var flip: int = 0 if !face["flip"] else 1
 					
 					vertices.push_back(quad[0])
-					vertices.push_back(quad[tri[0][0]])
-					vertices.push_back(quad[tri[0][1]])
+					vertices.push_back(quad[TRIANGLE_INDICES[flip][0][0]])
+					vertices.push_back(quad[TRIANGLE_INDICES[flip][0][1]])
 					
 					vertices.push_back(quad[1])
-					vertices.push_back(quad[tri[1][0]])
-					vertices.push_back(quad[tri[1][1]])
+					vertices.push_back(quad[TRIANGLE_INDICES[flip][1][0]])
+					vertices.push_back(quad[TRIANGLE_INDICES[flip][1][1]])
 	
 	tool.begin(Mesh.PRIMITIVE_TRIANGLES)
 	for vertex in vertices:
