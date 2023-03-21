@@ -32,6 +32,13 @@ func _init():
 func _ready():
 	thread.start(_run)
 
+func _input(event):
+	if event.is_action_released("toggle_wireframe"):
+		var mode := get_viewport().debug_draw
+		
+		mode = Viewport.DEBUG_DRAW_DISABLED if mode == Viewport.DEBUG_DRAW_WIREFRAME else Viewport.DEBUG_DRAW_WIREFRAME
+		get_viewport().debug_draw = mode
+
 func _exit_tree():
 	thread.wait_to_finish()
 
