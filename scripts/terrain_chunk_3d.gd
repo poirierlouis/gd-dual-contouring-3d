@@ -24,6 +24,10 @@ var points := MultiMeshInstance3D.new()
 			grid_scale = value
 			on_property_changed()
 
+var max_grid_size_index: int:
+	get:
+		return int(grid_size.x * grid_size.z * grid_size.y)
+
 # Editor only
 var _thread: Thread
 var _semaphore: Semaphore
@@ -115,15 +119,13 @@ func build() -> void:
 				var faces: Array[Dictionary] = cell.get_faces()
 				
 				for face in faces:
-					var quad: Array[Vector3] = [
-						cell.get_vertex(),
-					]
 					var face_vertices: Array = face["vertices"]
+					var quad: Array[Vector3] = [cell.get_vertex()]
 					
 					for vertex in face_vertices:
 						var cell_index := get_cell_index(x + vertex.x, y + vertex.y, z + vertex.z)
 						
-						if cell_index >= int(grid_size.x * grid_size.y * grid_size.z):
+						if cell_index == -1:
 							break
 						var adjacent := data[cell_index]
 						
@@ -155,5 +157,14 @@ func build() -> void:
 	for i in cells.size():
 		points.multimesh.set_instance_transform(i, Transform3D(Basis(), cells[i].get_vertex()))
 
+# Get index number at (x, y, z) position in buffer.
+#
+# Returns an index number, -1 when out of bounds.
 func get_cell_index(x: float, y: float, z: float) -> int:
-	return int(x + z * grid_size.x + y * grid_size.x * grid_size.z)
+	if x < 0 || y < 0 || z < 0 || x >= grid_size.x || y >= grid_size.y || z >= grid_size.z:
+		return -1
+	var index := int(x + z * grid_size.x + y * grid_size.x * grid_size.z)
+	
+	if index < 0 || index >= max_grid_size_index:
+		return -1
+	return index
