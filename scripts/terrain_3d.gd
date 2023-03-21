@@ -17,7 +17,7 @@ var chunks: Array[Dictionary] = []
 var thread := Thread.new()
 
 func _init():
-	noise.seed = 1953754538#randi()#0
+	noise.seed = randi()
 	noise.noise_type = FastNoiseLite.TYPE_PERLIN
 	noise.frequency = 0.001
 	print("seed: %d" % noise.seed)
