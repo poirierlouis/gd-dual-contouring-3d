@@ -22,8 +22,8 @@ func _init():
 	noise.frequency = 0.001
 	print("seed: %d" % noise.seed)
 	for y in range(-1, 0 + 1):
-		for z in range(0, 1 + 1):
-			for x in range(0, 1 + 1):
+		for z in range(0, 3 + 1):
+			for x in range(0, 3 + 1):
 				chunks.push_back({
 					"scene": ChunkScene.instantiate(),
 					"position": Vector3i(x, y, z),
