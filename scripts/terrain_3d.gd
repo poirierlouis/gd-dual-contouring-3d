@@ -38,7 +38,7 @@ func _input(event):
 		
 		mode = Viewport.DEBUG_DRAW_DISABLED if mode == Viewport.DEBUG_DRAW_WIREFRAME else Viewport.DEBUG_DRAW_WIREFRAME
 		get_viewport().debug_draw = mode
-	if event.is_action_released("toggle_points"):
+	if event.is_action_released("toggle_points") && is_terrain_ready():
 		for chunk in chunks:
 			chunk["scene"].toggle_points()
 
@@ -46,14 +46,24 @@ func _exit_tree():
 	thread.wait_to_finish()
 
 func _run():
-	for chunk_data in chunks:
-		generate_chunk(chunk_data)
+	for chunk in chunks:
+		generate_chunk(chunk)
+
+# Returns true when all chunks are built.
+func is_terrain_ready() -> bool:
+	for chunk in chunks:
+		var is_ready: bool = chunk["ready"]
+		
+		if !is_ready:
+			return false
+	return true
 
 func generate_chunk(chunk_data: Dictionary) -> void:
 	var chunk: TerrainChunk3D = chunk_data["scene"]
 	var grid_position: Vector3i = chunk_data["position"]
 	
 	create_chunk(chunk, grid_position)
+	chunk_data["ready"] = true
 	call_deferred("add_child", chunk)
 
 func create_chunk(chunk: TerrainChunk3D, grid_position: Vector3i) -> void:
