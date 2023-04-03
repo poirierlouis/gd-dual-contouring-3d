@@ -80,17 +80,11 @@ func compute_edge(ai: int, bi: int) -> Vector3:
 # Compute vertex(ices) position of [this] cell based on [edges] crossing.
 func compute_vertex() -> void:
 	var sides: Array = edges.filter(func(edge): return edge != null)
-	var vertex: Vector3 = sides.reduce(func(a, b):
-		return Cell.get_centroid(a, b)
-	)
-#	if sides.size() > 3:
-		# TBD: non-manifold to manifold
-#		print("<cell at='%s' crossing-edges='%d' />" % [position, sides.size()])
-#		return
-#	var a := Cell.get_centroid(sides[0], sides[1])
-#	var b := Cell.get_centroid(sides[1], sides[2])
-#	var vertex := Cell.get_centroid(a, b)
-#
+	var vertex := Vector3.ZERO
+	
+	for side in sides:
+		vertex += side
+	vertex /= sides.size()
 	vertices.push_back(vertex)
 
 func get_vertex() -> Vector3:
