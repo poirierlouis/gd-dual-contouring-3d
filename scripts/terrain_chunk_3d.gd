@@ -67,7 +67,7 @@ func _init():
 		_running = false
 	var sphere := SphereMesh.new()
 	
-	sphere.radius = 0.2
+	sphere.radius = 0.05
 	sphere.height = 2 * sphere.radius
 	sphere.radial_segments = 16
 	sphere.rings = roundi(sphere.radial_segments / 2.0)
