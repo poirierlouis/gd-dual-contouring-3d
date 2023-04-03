@@ -144,12 +144,11 @@ func build() -> void:
 			for x in range(-1, grid_size.x + 1):
 				var cell_position := Vector3(x, y, z)
 				var cell := Cell.new(cell_position, position, grid_scale)
-				
-				cell.compute_voxels(noise.get_noise_3d)
-				var is_crossing := cell.compute_edges()
+				var is_crossing := cell.compute_voxels(noise.get_noise_3d)
 				
 				if !is_crossing:
 					continue
+				cell.compute_edges()
 				cell.compute_vertex()
 				if !cell.vertices.is_empty():
 					var node := CellScene.instantiate()

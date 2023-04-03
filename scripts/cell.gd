@@ -30,7 +30,6 @@ var voxels: Array[float] = []
 var offsets: Array[Vector3] = []
 
 var edges: Array = []
-var edges_count := 0
 
 var vertices: Array[Vector3] = []
 
@@ -44,7 +43,11 @@ func _init(position: Vector3, grid_position: Vector3, grid_scale: Vector3):
 	self.edges.fill(null)
 
 # Compute voxels of [this] cell using [iso_fn] to get density.
-func compute_voxels(iso_fn: Callable) -> void:
+#
+# Returns true when [this] cell is crossing iso-surface.
+func compute_voxels(iso_fn: Callable) -> bool:
+	var crossing_mask := 0
+	
 	for i in 8:
 		offsets[i] = position + CELL_OFFSET[i]
 		voxels[i] = iso_fn.call(
@@ -52,18 +55,19 @@ func compute_voxels(iso_fn: Callable) -> void:
 			grid_position.y * grid_scale.y + offsets[i].y * grid_scale.y,
 			grid_position.z * grid_scale.z + offsets[i].z * grid_scale.z
 		)
+		if signf(voxels[i]) >= 0.0:
+			crossing_mask |= (1 << i)
+	return !(crossing_mask == 0 || crossing_mask == 255)
 
 # Compute sign changes between voxels (along edges).
 #
 # Return true when at least three edges are crossed.
-func compute_edges() -> bool:
+func compute_edges() -> void:
 	for i in 12:
 		var indices := CROSS_EDGES[i]
 		
 		if signf(voxels[indices[0]]) - signf(voxels[indices[1]]) != 0.0:
 			edges[i] = compute_edge(indices[0], indices[1])
-			edges_count += 1
-	return edges_count >= 3
 
 # Compute surface position on an edge between voxels [ai] and [bi].
 func compute_edge(ai: int, bi: int) -> Vector3:
