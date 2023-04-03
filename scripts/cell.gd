@@ -13,18 +13,48 @@ const CROSS_EDGES: Array[Array] = [
 	[0, 4], [1, 5], [2, 6], [3, 7],
 ]
 
+const A := 0
+const B := 1
+const C := 2
+const D := 3
+const E := 4
+const F := 5
+const G := 6
+const H := 7
+const I := 8
+const J := 9
+const K := 10
+const L := 11
+
+const ADJACENT_EDGES: Array[Array] = [
+	[B, C, I, J, D, E], # Edge A (0)
+	[A, D, K, I, C, F], # Edge B (1)
+	[A, D, J, L, B, G], # Edge C (2)
+	[B, C, K, L, A, H], # Edge D (3)
+	[F, G, I, J, H, A], # Edge E (4)
+	[E, H, I, K, G, B], # Edge F (5)
+	[E, H, J, L, F, C], # Edge G (6)
+	[F, G, K, L, E, D], # Edge H (7)
+	[A, B, E, F, J, K], # Edge I (8)
+	[A, C, E, G, I, L], # Edge J (9)
+	[B, D, F, H, I, L], # Edge K (10)
+	[C, D, G, H, J, K], # Edge L (11)
+]
+
 var position: Vector3
 var grid_position: Vector3
 var grid_scale: Vector3
 
-#    4---------5
-#   /|        /|
-#  / |       / |        Y
-# 6---------7  |        |
-# |  0------|--1		+---X
-# | /       | /        /
-# |/        |/        Z
-# 2---------3
+#     4-----E-----5
+#    /|          /|
+#   F I         G J
+#  /  |        /  |        Y
+# 6-----H-----7   |        |
+# |   0-----A-|---1		   +---X
+# K  /        L  /        /
+# | B         | C        Z
+# |/          |/
+# 2-----D-----3
 var voxels: Array[float] = []
 
 var offsets: Array[Vector3] = []
@@ -90,30 +120,32 @@ func compute_vertex() -> void:
 func get_vertex() -> Vector3:
 	return vertices[0]
 
-#    +---------+
-#   /|4       /|
-#  / |    1  / |        Y
-# +---------+ 3|        |
-# |2 +------|--+		+---X
-# | / 0     | /        /
-# |/       5|/        Z
-# +---------+
+#     4-----E-----5
+#    /|          /|
+#   F I         G J
+#  /  |        /  |        Y
+# 6-----H-----7   |        |
+# |   0-----A-|---1		   +---X
+# K  /        L  /        /
+# | B         | C        Z
+# |/          |/
+# 2-----D-----3
 func get_faces() -> Array[Dictionary]:
 	var faces: Array[Dictionary] = []
 	
-	if edges[11] != null:
+	if edges[L] != null:
 		faces.append({
 			"reverse": true,
 			"flip": voxels[3] >= 0.0,
 			"vertices": [Vector3(1, 0, 0), Vector3(0, 0, 1), Vector3(1, 0, 1)]
 		})
-	if edges[6] != null:
+	if edges[G] != null:
 		faces.append({
 			"reverse": false,
 			"flip": voxels[5] < 0.0,
 			"vertices": [Vector3(1, 0, 0), Vector3(0, 1, 0), Vector3(1, 1, 0)]
 		})
-	if edges[7] != null:
+	if edges[H] != null:
 		faces.append({
 			"reverse": false,
 			"flip": voxels[6] >= 0.0,
