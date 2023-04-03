@@ -5,8 +5,13 @@ class_name TerrainChunk3D
 extends Node3D
 
 const TRIANGLE_INDICES := [
-	[[1, 2], [3, 2]],
-	[[2, 1], [2, 3]],
+	[[0, 1, 2], [1, 3, 2]],
+	[[0, 2, 1], [1, 2, 3]],
+]
+
+const REVERSE_TRIANGLE_INDICES := [
+	[[0, 1, 3], [0, 3, 2]],
+	[[0, 3, 1], [0, 2, 3]],
 ]
 
 var mesh := MeshInstance3D.new()
@@ -160,15 +165,16 @@ func build() -> void:
 					if quad.size() != 4:
 						continue
 					var flip: int = 0 if !face["flip"] else 1
+					var reverse: bool = face["reverse"]
+					var indices := TRIANGLE_INDICES if !reverse else REVERSE_TRIANGLE_INDICES
 					
-					vertices.push_back(quad[0])
-					vertices.push_back(quad[TRIANGLE_INDICES[flip][0][0]])
-					vertices.push_back(quad[TRIANGLE_INDICES[flip][0][1]])
+					vertices.push_back(quad[indices[flip][0][0]])
+					vertices.push_back(quad[indices[flip][0][1]])
+					vertices.push_back(quad[indices[flip][0][2]])
 					
-					vertices.push_back(quad[1])
-					vertices.push_back(quad[TRIANGLE_INDICES[flip][1][0]])
-					vertices.push_back(quad[TRIANGLE_INDICES[flip][1][1]])
-	
+					vertices.push_back(quad[indices[flip][1][0]])
+					vertices.push_back(quad[indices[flip][1][1]])
+					vertices.push_back(quad[indices[flip][1][2]])
 	tool.begin(Mesh.PRIMITIVE_TRIANGLES)
 	for vertex in vertices:
 		tool.add_vertex(vertex)
