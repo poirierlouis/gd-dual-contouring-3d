@@ -15,12 +15,6 @@ height = 4.0
 
 [node name="Cell3D" type="Node3D"]
 script = ExtResource("1_b6lui")
-with_screenshot = true
-
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 2.5, 7, 10)
-visible = false
-current = true
 
 [node name="0" type="MeshInstance3D" parent="."]
 mesh = SubResource("BoxMesh_4fi27")

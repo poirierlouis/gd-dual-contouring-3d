@@ -19,8 +19,6 @@ var EdgeCrossingMaterial: StandardMaterial3D = load("res://assets/edge_crossing_
 
 @export var with_screenshot := false
 
-@onready var camera: Camera3D = $Camera3D
-
 var cubes: Array[MeshInstance3D] = []
 var edges: Array[MeshInstance3D] = []
 
@@ -48,7 +46,7 @@ func _ready():
 func screenshot():
 	if not with_screenshot:
 		return
-	var viewport := camera.get_viewport()
+	var viewport := get_viewport()
 	
 	await RenderingServer.frame_post_draw
 	var image := viewport.get_window().get_texture().get_image()
