@@ -41,6 +41,9 @@ func _input(event):
 	if event.is_action_released("toggle_points") && is_terrain_ready():
 		for chunk in chunks:
 			chunk["scene"].toggle_points()
+	if event.is_action_released("toggle_cells") && is_terrain_ready():
+		for chunk in chunks:
+			chunk["scene"].toggle_cells()
 
 func _exit_tree():
 	thread.wait_to_finish()

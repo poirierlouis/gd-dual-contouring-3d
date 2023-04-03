@@ -57,6 +57,13 @@ func screenshot():
 	image = image.get_region(Rect2i(650, 224, 624, 510))
 	image.save_png("user://screenshot_%s.png" % file_name)
 
+func build(cell: Cell) -> void:
+	position = cell.position
+	scale /= 5.0
+	for i in 8:
+		voxels[i] = signf(cell.voxels[i]) >= 0.0
+	update_cell()
+
 func update_cell():
 	for i in cubes.size():
 		var material: StandardMaterial3D = VoxelSolidMaterial if voxels[i] else VoxelAirMaterial
