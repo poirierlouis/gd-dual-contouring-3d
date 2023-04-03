@@ -30,6 +30,18 @@ var points := MultiMeshInstance3D.new()
 			grid_scale = value
 			on_property_changed()
 
+@export var without_points: bool:
+	set(_value):
+		toggle_points()
+
+@export var without_wireframe: bool:
+	set(_value):
+		var viewport := get_tree().edited_scene_root.get_viewport()
+		var mode := viewport.debug_draw
+		
+		mode = Viewport.DEBUG_DRAW_DISABLED if mode == Viewport.DEBUG_DRAW_WIREFRAME else Viewport.DEBUG_DRAW_WIREFRAME
+		viewport.debug_draw = mode
+
 var max_grid_size_index: int:
 	get:
 		return int((grid_size.x + 2) * (grid_size.z + 2) * (grid_size.y + 2))
