@@ -16,6 +16,7 @@ var points := MultiMeshInstance3D.new()
 
 @export var noise: FastNoiseLite
 @export var material: StandardMaterial3D
+@export var points_material: StandardMaterial3D
 
 @export var grid_size: Vector3:
 	set(value):
@@ -65,7 +66,7 @@ func _ready():
 		_running = true
 		_thread.start(on_rebuild)
 		_semaphore.post()
-	points.multimesh.mesh.surface_set_material(0, material)
+	points.multimesh.mesh.surface_set_material(0, points_material)
 
 func _exit_tree():
 	if Engine.is_editor_hint():

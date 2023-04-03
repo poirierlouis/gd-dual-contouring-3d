@@ -61,5 +61,6 @@ func create_chunk(chunk: TerrainChunk3D, grid_position: Vector3i) -> void:
 	chunk.grid_size = chunk_size
 	chunk.grid_scale = chunk_scale
 	chunk.position = Vector3(grid_position) * chunk_size
-	chunk.material = PointMaterial
+#	chunk.material = ChunkMaterial
+	chunk.points_material = PointMaterial
 	chunk.build()
