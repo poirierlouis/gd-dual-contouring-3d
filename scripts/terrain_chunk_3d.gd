@@ -14,10 +14,14 @@ const REVERSE_TRIANGLE_INDICES := [
 	[[0, 3, 1], [0, 2, 3]],
 ]
 
+var CellScene = preload("res://scenes/cell_3d.tscn")
+
 var mesh := MeshInstance3D.new()
 var tool := SurfaceTool.new()
 
 var points := MultiMeshInstance3D.new()
+
+var voxels := Node3D.new()
 
 @export var noise: FastNoiseLite
 @export var material: StandardMaterial3D
@@ -76,6 +80,9 @@ func _init():
 	
 	mesh.name = "Mesh"
 	add_child(mesh)
+	
+	voxels.name = "Voxels"
+#	add_child(voxels)
 
 func _ready():
 	if Engine.is_editor_hint():
@@ -116,11 +123,22 @@ func toggle_points() -> void:
 	else:
 		add_child(points)
 
+# Show / hide voxels.
+func toggle_cells() -> void:
+	if voxels.is_inside_tree():
+		remove_child(voxels)
+	else:
+		add_child(voxels)
+
 func build() -> void:
 	var data: Array[Cell] = []
+	var nodes: Array[Cell3D] = []
 	
 	data.resize(int((grid_size.x + 2) * (grid_size.y + 2) * (grid_size.z + 2)))
 	data.fill(null)
+	for voxel in voxels.get_children():
+		voxels.remove_child(voxel)
+	
 	for y in range(-1, grid_size.y + 1):
 		for z in range(-1, grid_size.z + 1):
 			for x in range(-1, grid_size.x + 1):
@@ -134,9 +152,12 @@ func build() -> void:
 					continue
 				cell.compute_vertex()
 				if !cell.vertices.is_empty():
+					var node := CellScene.instantiate()
 					var index := get_cell_index(x, y, z)
 					
 					data[index] = cell
+					node.build(cell)
+					nodes.push_back(node)
 	var vertices := PackedVector3Array()
 	
 	for y in grid_size.y:
@@ -182,11 +203,14 @@ func build() -> void:
 	mesh.mesh = tool.commit()
 	
 	var cells := data.filter(func(cell): return cell != null)
-
+	
 	points.multimesh.instance_count = cells.size()
 	points.multimesh.visible_instance_count = cells.size()
 	for i in cells.size():
 		points.multimesh.set_instance_transform(i, Transform3D(Basis(), cells[i].get_vertex()))
+	
+	for node in nodes:
+		voxels.add_child(node)
 
 # Get index number at (x, y, z) position in buffer.
 #
