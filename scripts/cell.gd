@@ -90,8 +90,6 @@ func compute_voxels(iso_fn: Callable) -> bool:
 	return !(crossing_mask == 0 || crossing_mask == 255)
 
 # Compute sign changes between voxels (along edges).
-#
-# Return true when at least three edges are crossed.
 func compute_edges() -> void:
 	for i in 12:
 		var indices := CROSS_EDGES[i]
