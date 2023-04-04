@@ -12,6 +12,8 @@ material = ExtResource("3_m07og")
 top_radius = 0.25
 bottom_radius = 0.25
 height = 4.0
+radial_segments = 8
+rings = 1
 
 [node name="Cell3D" type="Node3D"]
 script = ExtResource("1_b6lui")
