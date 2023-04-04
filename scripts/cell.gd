@@ -85,7 +85,7 @@ func compute_voxels(iso_fn: Callable) -> bool:
 			grid_position.y * grid_scale.y + offsets[i].y * grid_scale.y,
 			grid_position.z * grid_scale.z + offsets[i].z * grid_scale.z
 		)
-		if signf(voxels[i]) >= 0.0:
+		if voxels[i] >= 0.0:
 			crossing_mask |= (1 << i)
 	return !(crossing_mask == 0 || crossing_mask == 255)
 
