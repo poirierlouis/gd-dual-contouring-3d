@@ -20,7 +20,6 @@ var mesh := MeshInstance3D.new()
 var tool := SurfaceTool.new()
 
 var points := MultiMeshInstance3D.new()
-
 var voxels := Node3D.new()
 
 @export var noise: FastNoiseLite
