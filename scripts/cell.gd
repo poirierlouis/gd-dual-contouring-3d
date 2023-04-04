@@ -62,6 +62,7 @@ var offsets: Array[Vector3] = []
 var edges: Array = []
 
 var vertices: Array[Vector3] = []
+var normals: Array[Vector3] = []
 
 func _init(position: Vector3, grid_position: Vector3, grid_scale: Vector3):
 	self.position = position
@@ -130,24 +131,19 @@ func get_vertex() -> Vector3:
 # 2-----D-----3
 func get_faces() -> Array[Dictionary]:
 	var faces: Array[Dictionary] = []
-	var flip: bool
 	
 	if edges[L] != null:
 		faces.append({
-			"reverse": false,
 			"flip": voxels[3] >= 0.0,
 			"vertices": [Vector3(1, 0, 0), Vector3(0, 0, 1), Vector3(1, 0, 1)]
 		})
 	if edges[G] != null:
-		flip = voxels[5] < 0.0
 		faces.append({
-			"reverse": !flip,
-			"flip": flip,
+			"flip": voxels[5] < 0.0,
 			"vertices": [Vector3(1, 0, 0), Vector3(0, 1, 0), Vector3(1, 1, 0)]
 		})
 	if edges[H] != null:
 		faces.append({
-			"reverse": false,
 			"flip": voxels[6] >= 0.0,
 			"vertices": [Vector3(0, 0, 1), Vector3(0, 1, 0), Vector3(0, 1, 1)]
 		})

@@ -9,7 +9,7 @@ const TRIANGLE_INDICES := [
 	[[0, 2, 1], [1, 2, 3]],
 ]
 
-const REVERSE_TRIANGLE_INDICES := [
+const SWAP_TRIANGLE_INDICES := [
 	[[0, 1, 3], [0, 3, 2]],
 	[[0, 3, 1], [0, 2, 3]],
 ]
@@ -184,8 +184,27 @@ func build() -> void:
 					if quad.size() != 4:
 						continue
 					var flip: int = 0 if !face["flip"] else 1
-					var reverse: bool = face["reverse"]
-					var indices := TRIANGLE_INDICES if !reverse else REVERSE_TRIANGLE_INDICES
+					var triangles := [
+						quad[TRIANGLE_INDICES[flip][0][0]],
+						quad[TRIANGLE_INDICES[flip][0][1]],
+						quad[TRIANGLE_INDICES[flip][0][2]],
+						
+						quad[TRIANGLE_INDICES[flip][1][0]],
+						quad[TRIANGLE_INDICES[flip][1][1]],
+						quad[TRIANGLE_INDICES[flip][1][2]],
+					]
+					
+					# Delaunay Criterion
+					var _01: Vector3 = triangles[0].direction_to(triangles[1])
+					var _02: Vector3 = triangles[0].direction_to(triangles[2])
+					var alpha := to_angle(_01.dot(_02))
+					
+					var _31: Vector3 = triangles[4].direction_to(triangles[1])
+					var _32: Vector3 = triangles[4].direction_to(triangles[2])
+					var gamma := to_angle(_31.dot(_32))
+					
+					var swap: bool = false if (alpha + gamma) <= 180.0 else true
+					var indices := TRIANGLE_INDICES if !swap else SWAP_TRIANGLE_INDICES
 					
 					vertices.push_back(quad[indices[flip][0][0]])
 					vertices.push_back(quad[indices[flip][0][1]])
@@ -209,6 +228,13 @@ func build() -> void:
 	
 	for node in nodes:
 		voxels.add_child(node)
+
+func to_angle(value: float) -> float:
+	if value == 0.0:
+		return 90.0
+	elif value < 0.0:
+		return abs(value) * 90.0 + 90.0
+	return 90 - abs(value) * 90.0
 
 # Get index number at (x, y, z) position in buffer.
 #
