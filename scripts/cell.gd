@@ -130,17 +130,19 @@ func get_vertex() -> Vector3:
 # 2-----D-----3
 func get_faces() -> Array[Dictionary]:
 	var faces: Array[Dictionary] = []
+	var flip: bool
 	
 	if edges[L] != null:
 		faces.append({
-			"reverse": true,
+			"reverse": false,
 			"flip": voxels[3] >= 0.0,
 			"vertices": [Vector3(1, 0, 0), Vector3(0, 0, 1), Vector3(1, 0, 1)]
 		})
 	if edges[G] != null:
+		flip = voxels[5] < 0.0
 		faces.append({
-			"reverse": false,
-			"flip": voxels[5] < 0.0,
+			"reverse": !flip,
+			"flip": flip,
 			"vertices": [Vector3(1, 0, 0), Vector3(0, 1, 0), Vector3(1, 1, 0)]
 		})
 	if edges[H] != null:
