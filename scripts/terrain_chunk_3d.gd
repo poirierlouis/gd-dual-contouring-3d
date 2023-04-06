@@ -52,7 +52,7 @@ var voxels := Node3D.new()
 
 var max_grid_size_index: int:
 	get:
-		return int((grid_size.x + 2) * (grid_size.z + 2) * (grid_size.y + 2))
+		return int((grid_size.x + 4) * (grid_size.z + 4) * (grid_size.y + 4))
 
 # Editor only
 var _thread: Thread
@@ -133,14 +133,14 @@ func build() -> void:
 	var data: Array[Cell] = []
 	var nodes: Array[Cell3D] = []
 	
-	data.resize(int((grid_size.x + 2) * (grid_size.y + 2) * (grid_size.z + 2)))
+	data.resize(int((grid_size.x + 4) * (grid_size.y + 4) * (grid_size.z + 4)))
 	data.fill(null)
 	for voxel in voxels.get_children():
 		voxels.remove_child(voxel)
 	
-	for y in range(-1, grid_size.y + 1):
-		for z in range(-1, grid_size.z + 1):
-			for x in range(-1, grid_size.x + 1):
+	for y in range(-2, grid_size.y + 2):
+		for z in range(-2, grid_size.z + 2):
+			for x in range(-2, grid_size.x + 2):
 				var cell_position := Vector3(x, y, z)
 				var cell := Cell.new(cell_position, position, grid_scale)
 				var is_crossing := cell.compute_voxels(noise.get_noise_3d)
@@ -157,10 +157,11 @@ func build() -> void:
 					node.build(cell)
 					nodes.push_back(node)
 	var vertices := PackedVector3Array()
+	var normals: Array[Cell] = []
 	
-	for y in grid_size.y:
-		for z in grid_size.z:
-			for x in grid_size.x:
+	for y in range(-1, grid_size.y + 1):
+		for z in range(-1, grid_size.z + 1):
+			for x in range(-1, grid_size.x + 1):
 				var index := get_cell_index(x, y, z)
 				var cell := data[index]
 				
@@ -170,7 +171,7 @@ func build() -> void:
 				
 				for face in faces:
 					var face_vertices: Array = face["vertices"]
-					var quad: Array[Vector3] = [cell.get_vertex()]
+					var quad: Array[Cell] = [cell]
 					
 					for vertex in face_vertices:
 						var cell_index := get_cell_index(x + vertex.x, y + vertex.y, z + vertex.z)
@@ -180,43 +181,63 @@ func build() -> void:
 						var adjacent := data[cell_index]
 						
 						if adjacent != null:
-							quad.push_back(adjacent.get_vertex())
+							quad.push_back(adjacent)
 					if quad.size() != 4:
 						continue
 					var flip: int = 0 if !face["flip"] else 1
-					var triangles := [
-						quad[TRIANGLE_INDICES[flip][0][0]],
-						quad[TRIANGLE_INDICES[flip][0][1]],
-						quad[TRIANGLE_INDICES[flip][0][2]],
+					var swap: bool = compute_delaunay_criterion([
+						quad[TRIANGLE_INDICES[flip][0][0]].get_vertex(),
+						quad[TRIANGLE_INDICES[flip][0][1]].get_vertex(),
+						quad[TRIANGLE_INDICES[flip][0][2]].get_vertex(),
 						
-						quad[TRIANGLE_INDICES[flip][1][0]],
-						quad[TRIANGLE_INDICES[flip][1][1]],
-						quad[TRIANGLE_INDICES[flip][1][2]],
-					]
-					
-					# Delaunay Criterion
-					var _01: Vector3 = triangles[0].direction_to(triangles[1])
-					var _02: Vector3 = triangles[0].direction_to(triangles[2])
-					var alpha := to_angle(_01.dot(_02))
-					
-					var _31: Vector3 = triangles[4].direction_to(triangles[1])
-					var _32: Vector3 = triangles[4].direction_to(triangles[2])
-					var gamma := to_angle(_31.dot(_32))
-					
-					var swap: bool = false if (alpha + gamma) <= 180.0 else true
+						quad[TRIANGLE_INDICES[flip][1][0]].get_vertex(),
+						quad[TRIANGLE_INDICES[flip][1][1]].get_vertex(),
+						quad[TRIANGLE_INDICES[flip][1][2]].get_vertex(),
+					])
 					var indices := TRIANGLE_INDICES if !swap else SWAP_TRIANGLE_INDICES
 					
-					vertices.push_back(quad[indices[flip][0][0]])
-					vertices.push_back(quad[indices[flip][0][1]])
-					vertices.push_back(quad[indices[flip][0][2]])
+					if x >= 0 && y >= 0 && z >= 0 && \
+						x < grid_size.x && y < grid_size.y && z < grid_size.z:
+						vertices.push_back(quad[indices[flip][0][0]].get_vertex())
+						vertices.push_back(quad[indices[flip][0][1]].get_vertex())
+						vertices.push_back(quad[indices[flip][0][2]].get_vertex())
+						
+						vertices.push_back(quad[indices[flip][1][0]].get_vertex())
+						vertices.push_back(quad[indices[flip][1][1]].get_vertex())
+						vertices.push_back(quad[indices[flip][1][2]].get_vertex())
 					
-					vertices.push_back(quad[indices[flip][1][0]])
-					vertices.push_back(quad[indices[flip][1][1]])
-					vertices.push_back(quad[indices[flip][1][2]])
+					var an := Plane(
+						quad[indices[flip][0][0]].get_vertex(),
+						quad[indices[flip][0][1]].get_vertex(),
+						quad[indices[flip][0][2]].get_vertex()
+					).normal
+					var bn := Plane(
+						quad[indices[flip][1][0]].get_vertex(),
+						quad[indices[flip][1][1]].get_vertex(),
+						quad[indices[flip][1][2]].get_vertex()
+					).normal
+						
+					quad[indices[flip][0][0]].add_normal(an)
+					quad[indices[flip][0][1]].add_normal(an)
+					quad[indices[flip][0][2]].add_normal(an)
+					
+					quad[indices[flip][1][0]].add_normal(bn)
+					quad[indices[flip][1][1]].add_normal(bn)
+					quad[indices[flip][1][2]].add_normal(bn)
+					if x >= 0 && y >= 0 && z >= 0 && \
+						x < grid_size.x && y < grid_size.y && z < grid_size.z:
+						normals.push_back(quad[indices[flip][0][0]])
+						normals.push_back(quad[indices[flip][0][1]])
+						normals.push_back(quad[indices[flip][0][2]])
+						
+						normals.push_back(quad[indices[flip][1][0]])
+						normals.push_back(quad[indices[flip][1][1]])
+						normals.push_back(quad[indices[flip][1][2]])
 	tool.begin(Mesh.PRIMITIVE_TRIANGLES)
-	for vertex in vertices:
-		tool.add_vertex(vertex)
-	tool.generate_normals()
+	for i in vertices.size():
+		tool.set_normal(normals[i].compute_normal())
+		tool.add_vertex(vertices[i])
+	tool.index()
 	mesh.mesh = tool.commit()
 	
 	var cells := data.filter(func(cell): return cell != null)
@@ -226,24 +247,46 @@ func build() -> void:
 	for i in cells.size():
 		points.multimesh.set_instance_transform(i, Transform3D(Basis(), cells[i].get_vertex()))
 	
-	for node in nodes:
-		voxels.add_child(node)
+	if DBG:
+		for node in nodes:
+			voxels.add_child(node)
+	elapsed_time = Time.get_ticks_msec() - elapsed_time
+	print("<chunk built='%s' duration='%d ms' />" % [position, elapsed_time])
 
-func to_angle(value: float) -> float:
-	if value == 0.0:
-		return 90.0
-	elif value < 0.0:
-		return abs(value) * 90.0 + 90.0
-	return 90 - abs(value) * 90.0
+# Computes delaunay criterion on [vertices].
+#
+# Returns true to swap triangle, false otherwise.
+func compute_delaunay_criterion(vertices: Array[Vector3]) -> bool:
+	var _01 := vertices[0].direction_to(vertices[1])
+	var _02 := vertices[0].direction_to(vertices[2])
+	var alpha := TerrainChunk3D.to_angle(_01.dot(_02))
+	
+	var _31 := vertices[4].direction_to(vertices[1])
+	var _32 := vertices[4].direction_to(vertices[2])
+	var gamma := TerrainChunk3D.to_angle(_31.dot(_32))
+	
+	return false if alpha + gamma <= 180.0 else true
 
 # Get index number at (x, y, z) position in buffer.
 #
 # Returns an index number, -1 when out of bounds.
 func get_cell_index(x: float, y: float, z: float) -> int:
-	if x < 0 || y < 0 || z < 0 || x >= grid_size.x + 2 || y >= grid_size.y + 2 || z >= grid_size.z + 2:
+	x += 2
+	y += 2
+	z += 2
+	if x < 0 || y < 0 || z < 0 || x >= grid_size.x + 4 || y >= grid_size.y + 4 || z >= grid_size.z + 4:
 		return -1
-	var index := int(x + z * (grid_size.x + 2) + y * (grid_size.x + 2) * (grid_size.z + 2))
+	var index := int(x + z * (grid_size.x + 4) + y * (grid_size.x + 4) * (grid_size.z + 4))
 	
 	if index < 0 || index >= max_grid_size_index:
 		return -1
 	return index
+
+# Converts dot product of two vectors to an angle in degrees: 
+# [-1, 0, 1] to [180°, 90°, 0°].
+static func to_angle(value: float) -> float:
+	if value == 0.0:
+		return 90.0
+	elif value < 0.0:
+		return abs(value) * 90.0 + 90.0
+	return 90.0 - value * 90.0

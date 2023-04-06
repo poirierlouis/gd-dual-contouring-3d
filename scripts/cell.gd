@@ -63,6 +63,7 @@ var edges: Array = []
 
 var vertices: Array[Vector3] = []
 var normals: Array[Vector3] = []
+var normals_count: int = 0
 
 func _init(position: Vector3, grid_position: Vector3, grid_scale: Vector3):
 	self.position = position
@@ -116,8 +117,19 @@ func compute_vertex() -> void:
 	vertex /= sides.size()
 	vertices.push_back(vertex)
 
+# Sum [normal] with previous one.
+func add_normal(normal: Vector3) -> void:
+	if normals.is_empty():
+		normals.push_back(normal)
+		return
+	normals[0] += normal
+	normals_count += 1
+
 func get_vertex() -> Vector3:
 	return vertices[0]
+
+func compute_normal() -> Vector3:
+	return (normals[0] / normals_count).normalized()
 
 #     4-----E-----5
 #    /|          /|

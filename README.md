@@ -11,19 +11,19 @@ It implements the [Dual Contouring] algorithm (in 3D).
 - Computes vertex position in a cell (center between crossing edges only, no QEF).
 - ~~Spawn two vertices to prevent non-manifold surface when required.~~
 - Contour voxels by joining vertices to create quads.
+- Compute normals per chunk to seamlessly stitch chunks.
 - Smooth mesh using [Delaunay triangulation].
 
 ## Known issues
 
 - Compute two vertices per cell to create manifold mesh when required.
-- Compute normals per chunk to seamlessly stitch chunks.
 - Merge vertices when possible?
 
 ## Roadmap
 
 - Improve performance using caching mechanism (like memoize).
 - Improve performance using an Octree data structure.
-- Generate chunks with different LOD using a Octree data structure.
+- Generate chunks with different LOD using an Octree data structure.
 - Improve performance with a C++ implementation using GDExtension.
 
 ## Usage
