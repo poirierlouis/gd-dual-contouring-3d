@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://r7ophs20il7a"]
 
-[ext_resource type="Script" path="res://scripts/terrain_chunk_3d.gd" id="1_dt8lj"]
+[ext_resource type="Script" uid="uid://iadopijjh7cj" path="res://scripts/terrain_chunk_3d.gd" id="1_dt8lj"]
 [ext_resource type="Material" uid="uid://1g8ndjdlumci" path="res://assets/point_material.tres" id="2_ki4j0"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_m6ndr"]

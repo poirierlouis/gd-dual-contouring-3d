@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://chfhllks2xnoi"]
 
-[ext_resource type="Script" path="res://scripts/cell_3d.gd" id="1_b6lui"]
+[ext_resource type="Script" uid="uid://l3mko1reexmm" path="res://scripts/cell_3d.gd" id="1_b6lui"]
 [ext_resource type="Material" uid="uid://b3ftjwp5w4mq1" path="res://assets/voxel_air_material.tres" id="2_vw7i6"]
 [ext_resource type="Material" uid="uid://djy04tmi4rx1s" path="res://assets/edge_empty_material.tres" id="3_m07og"]
 

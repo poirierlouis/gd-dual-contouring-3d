@@ -131,7 +131,7 @@ func toggle_cells() -> void:
 
 func build() -> void:
 	var data: Array[Cell] = []
-	var nodes: Array[Cell3D] = []
+	#var nodes: Array[Cell3D] = []
 	
 	data.resize(int((grid_size.x + 4) * (grid_size.y + 4) * (grid_size.z + 4)))
 	data.fill(null)
@@ -150,12 +150,12 @@ func build() -> void:
 				cell.compute_edges()
 				cell.compute_vertex()
 				if !cell.vertices.is_empty():
-					var node := CellScene.instantiate()
+					#var node := CellScene.instantiate()
 					var index := get_cell_index(x, y, z)
 					
 					data[index] = cell
-					node.build(cell)
-					nodes.push_back(node)
+					#node.build(cell)
+					#nodes.push_back(node)
 	var vertices := PackedVector3Array()
 	var normals: Array[Cell] = []
 	
@@ -247,11 +247,11 @@ func build() -> void:
 	for i in cells.size():
 		points.multimesh.set_instance_transform(i, Transform3D(Basis(), cells[i].get_vertex()))
 	
-	if DBG:
-		for node in nodes:
-			voxels.add_child(node)
-	elapsed_time = Time.get_ticks_msec() - elapsed_time
-	print("<chunk built='%s' duration='%d ms' />" % [position, elapsed_time])
+	#if DBG:
+		#for node in nodes:
+			#voxels.add_child(node)
+	#elapsed_time = Time.get_ticks_msec() - elapsed_time
+	#print("<chunk built='%s' duration='%d ms' />" % [position, elapsed_time])
 
 # Computes delaunay criterion on [vertices].
 #

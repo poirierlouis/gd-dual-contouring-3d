@@ -65,10 +65,10 @@ var vertices: Array[Vector3] = []
 var normals: Array[Vector3] = []
 var normals_count: int = 0
 
-func _init(position: Vector3, grid_position: Vector3, grid_scale: Vector3):
-	self.position = position
-	self.grid_position = grid_position
-	self.grid_scale = grid_scale
+func _init(p_position: Vector3, p_grid_position: Vector3, p_grid_scale: Vector3):
+	self.position = p_position
+	self.grid_position = p_grid_position
+	self.grid_scale = p_grid_scale
 	self.offsets.resize(8)
 	self.voxels.resize(8)
 	self.edges.resize(12)

@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://vxd6b8g1e0dx"]
 
-[ext_resource type="Script" path="res://scripts/camera_controller.gd" id="1_huq2s"]
+[ext_resource type="Script" uid="uid://clejgpdguxtls" path="res://scripts/camera_controller.gd" id="1_huq2s"]
 [ext_resource type="PackedScene" uid="uid://13b664f5dl0k" path="res://scenes/terrain_3d.tscn" id="2_5n1wu"]
 
 [sub_resource type="Environment" id="Environment_gdk03"]
